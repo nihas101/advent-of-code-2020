@@ -13,7 +13,7 @@
                               (string/split password-policy #"\s+|:\s+|-")))
        password-policies))
 
-(defn- policy-fulfiled-1? [{:keys [a b letter password]}]
+(defn- policy-fulfilled-1? [{:keys [a b letter password]}]
   (<= a (get (frequencies password) letter 0) b))
 
 (defn day2-1
@@ -23,12 +23,12 @@
          p (parse-password+policies password-policies)]
      (day2-1 p)))
   ([p]
-   (count (filter policy-fulfiled-1? p))))
+   (count (filter policy-fulfilled-1? p))))
 
-(defn- policy-fulfiled-2? [{:keys [a b letter password]}]
+(defn- policy-fulfilled-2? [{:keys [a b letter password]}]
   (cond
     (< (count password) (dec b)) false
-    (= (get password (dec a)) letter) (not (= (get password (dec b)) letter))
+    (= (get password (dec a)) letter) (not= (get password (dec b)) letter)
     :else (= (get password (dec b)) letter)))
 
 (defn day2-2
@@ -38,4 +38,4 @@
          p (parse-password+policies password-policies)]
      (day2-2 p)))
   ([p]
-   (count (filter policy-fulfiled-2? p))))
+   (count (filter policy-fulfilled-2? p))))
