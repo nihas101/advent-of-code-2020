@@ -1,4 +1,4 @@
-# Advent of code 2020
+# Advent of code 2020 [![Build Status](https://travis-ci.com/nihas101/advent-of-code-2020.svg?token=ucPq7ZqrojmxZp9LtXkJ&branch=master)](https://travis-ci.com/nihas101/advent-of-code-2020)
 A reopsitory containing my solutions to the [Advent of code 2020](https://adventofcode.com)
 
 ## Requirements
