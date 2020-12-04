@@ -3,8 +3,8 @@
    [clojure.string :as string]))
 
 (defn- parse-password+policy [[a b letter password]]
-  {:a (read-string a)
-   :b (read-string b)
+  {:a (Integer/parseInt a)
+   :b (Integer/parseInt b)
    :letter (first letter) ; String of length 1 to char
    :password password})
 

@@ -1,4 +1,6 @@
-(ns advent-of-code-2020.day01)
+(ns advent-of-code-2020.day01
+  (:require
+   [clojure.string :as string]))
 
 (defn- combinations
   "Creates all possible combinations of collection prefix and elements in input."
@@ -12,7 +14,9 @@
 (defn day1-1
   "https://adventofcode.com/2020/day/1"
   ([]
-   (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
+   (let [expenses (map (fn [x] (Integer/parseInt x))
+                       (string/split-lines
+                        (slurp "resources/expense_report.txt")))]
      (day1-1 expenses)))
   ([expenses]
    (->> expenses
@@ -33,7 +37,9 @@
 (defn day1-2
   "https://adventofcode.com/2020/day/1"
   ([]
-   (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
+   (let [expenses (map (fn [x] (Integer/parseInt x))
+                       (string/split-lines
+                        (slurp "resources/expense_report.txt")))]
      (day1-2 expenses)))
   ([expenses]
    (->> expenses
