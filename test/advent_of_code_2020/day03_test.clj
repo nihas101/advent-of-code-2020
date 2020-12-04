@@ -1,6 +1,7 @@
 (ns advent-of-code-2020.day03-test
-  (:require [clojure.test :refer :all]
-            [advent-of-code-2020.day03 :refer :all]))
+  (:require
+   [clojure.test :refer :all]
+   [advent-of-code-2020.day03 :refer :all]))
 
 (defonce test-map
   ["..##......."

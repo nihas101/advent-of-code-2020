@@ -1,6 +1,7 @@
 (ns advent-of-code-2020.day02-test
-  (:require [clojure.test :refer :all]
-            [advent-of-code-2020.day02 :refer :all]))
+  (:require
+   [clojure.test :refer :all]
+   [advent-of-code-2020.day02 :refer :all]))
 
 (deftest day2-1-parse-password+policy-example-test
   (testing "Parsing the passwords and policies in the example"
