@@ -1,39 +1,13 @@
-(ns advent-of-code-2020.core-test
+(ns advent-of-code-2020.day02-test
   (:require [clojure.test :refer :all]
-            [advent-of-code-2020.core :refer :all]))
-
-(deftest day1-1-example-test
-  (testing "Day 1 - Part 1 - Example"
-    (is (= 514579 (day1-1 [1721
-                           979
-                           366
-                           299
-                           675
-                           1456])))))
-
-(deftest day1-1-test
-  (testing "Day 1 - Part 1"
-    (is (= 1013211 (day1-1)))))
-
-(deftest day1-2-example-test
-  (testing "Day 1 - Part 2 - Example"
-    (is (= 241861950 (day1-2 [1721
-                              979
-                              366
-                              299
-                              675
-                              1456])))))
-
-(deftest day1-2-test
-  (testing "Day 1 - Part 2"
-    (is (= 13891280 (day1-2)))))
+            [advent-of-code-2020.day02 :refer :all]))
 
 (deftest day2-1-parse-password+policy-example-test
   (testing "Parsing the passwords and policies in the example"
     (is (= [{:a 1 :b 3 :letter \a, :password "abcde"}
             {:a 1 :b 3 :letter \b, :password "cdefg"}
             {:a 2 :b 9 :letter \c, :password "ccccccccc"}]
-           (#'advent-of-code-2020.core/parse-password+policies
+           (#'advent-of-code-2020.day02/parse-password+policies
             ["1-3 a: abcde"
              "1-3 b: cdefg"
              "2-9 c: ccccccccc"])))))
