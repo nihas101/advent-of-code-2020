@@ -15,13 +15,15 @@
 
 (defn day1-1
   "https://adventofcode.com/2020/day/1"
-  []
-  (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
-    (->> expenses
-         (combinations [])
-         (filter (fn [[a b]] (= (+ a b) 2020)))
-         first
-         (apply *))))
+  ([]
+   (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
+     (day1-1 expenses)))
+  ([expenses]
+   (->> expenses
+        (combinations [])
+        (filter (fn [[a b]] (= (+ a b) 2020)))
+        first
+        (apply *))))
 
 (defn- expense-3-combinations
   "Creates all possible combinations of 3 expense entries"
@@ -34,13 +36,15 @@
 
 (defn day1-2
   "https://adventofcode.com/2020/day/1"
-  []
-  (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
-    (->> expenses
-         expense-3-combinations
-         (filter (fn [[a b c]] (= (+ a b c) 2020)))
-         first
-         (apply *))))
+  ([]
+   (let [expenses (read-string (str "[" (slurp "resources/expense_report.txt") "]"))]
+     (day1-2 expenses)))
+  ([expenses]
+   (->> expenses
+        expense-3-combinations
+        (filter (fn [[a b c]] (= (+ a b c) 2020)))
+        first
+        (apply *))))
 
 ;; Day 2
 
@@ -60,10 +64,12 @@
 
 (defn day2-1
   "https://adventofcode.com/2020/day/2"
-  []
-  (let [password-policies (string/split-lines (slurp "resources/passwords.txt"))
-        p (parse-password+policies password-policies)]
-    (count (filter policy-fulfiled-1? p))))
+  ([]
+   (let [password-policies (string/split-lines (slurp "resources/passwords.txt"))
+         p (parse-password+policies password-policies)]
+     (day2-1 p)))
+  ([p]
+   (count (filter policy-fulfiled-1? p))))
 
 (defn- policy-fulfiled-2? [{:keys [a b letter password]}]
   (cond
@@ -73,9 +79,11 @@
 
 (defn day2-2
   "https://adventofcode.com/2020/day/2"
-  []
-  (let [password-policies (string/split-lines (slurp "resources/passwords.txt"))
-        p (parse-password+policies password-policies)]
-    (count (filter policy-fulfiled-2? p))))
+  ([]
+   (let [password-policies (string/split-lines (slurp "resources/passwords.txt"))
+         p (parse-password+policies password-policies)]
+     (day2-2 p)))
+  ([p]
+   (count (filter policy-fulfiled-2? p))))
 
 ;; Day 3
