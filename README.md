@@ -1,14 +1,15 @@
-# advent_of_code_2020
+# Advent of code 2020
+A reopsitory containing my solutions to the [Advent of code 2020](https://adventofcode.com)
 
-A Clojure library designed to ... well, that part is up to you.
+## Requirements
+The solutions are written in [Clojure](https://clojure.org). [Spec](https://clojure.org/guides/spec) is used in some solutions, so **Clojure 1.10** or higher is required to run some solutions.
 
-## Usage
-
-FIXME
+## Solutions
+The solutions are located in `src/advent_of_code_2020/`. The solutions for day XX is found in file `dayXX.clj`. The corresponding test are found in files named `test/advent_of_code_2020/dayXX_test.clj`.
 
 ## License
 
-Copyright © 2020 FIXME
+Copyright © 2020 nihas101
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
