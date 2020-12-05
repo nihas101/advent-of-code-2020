@@ -12,7 +12,7 @@
 ;; cid is optional
 (defonce ^:private required-keys [:byr :iyr :eyr :hgt :hcl :ecl :pid])
 
-(defn valid-passport-1? [passport]
+(defn- valid-passport-1? [passport]
   (empty? (remove (set (keys passport)) required-keys)))
 
 (defn day4-1
