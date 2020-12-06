@@ -11,19 +11,24 @@
       (recur ys (concat res (mapv conj (repeat (conj prefix y)) ys)))
       res)))
 
-(defn day1-1
+(defn- day1
   "https://adventofcode.com/2020/day/1"
-  ([]
-   (let [expenses (map (fn [x] (Integer/parseInt x))
-                       (string/split-lines
-                        (slurp "resources/expense_report.txt")))]
-     (day1-1 expenses)))
-  ([expenses]
-   (->> expenses
-        (combinations [])
-        (filter (fn [[a b]] (= (+ a b) 2020)))
-        first
-        (apply *))))
+  [combinator filter]
+  (fn day1-fn
+    ([]
+     (let [expenses (map (fn [x] (Integer/parseInt x))
+                         (string/split-lines
+                          (slurp "resources/expense_report.txt")))]
+       (day1-fn expenses)))
+    ([expenses]
+     (->> expenses
+          (combinator)
+          (filter)
+          (first)
+          (apply *)))))
+
+(def day1-1 (day1 (partial combinations [])
+                  (partial filter (fn [[a b]] (= (+ a b) 2020)))))
 
 (defn- expense-3-combinations
   "Creates all possible combinations of 3 expense entries"
@@ -34,16 +39,5 @@
       (recur xs (concat res (combinations [x] xs)))
       res)))
 
-(defn day1-2
-  "https://adventofcode.com/2020/day/1"
-  ([]
-   (let [expenses (map (fn [x] (Integer/parseInt x))
-                       (string/split-lines
-                        (slurp "resources/expense_report.txt")))]
-     (day1-2 expenses)))
-  ([expenses]
-   (->> expenses
-        expense-3-combinations
-        (filter (fn [[a b c]] (= (+ a b c) 2020)))
-        first
-        (apply *))))
+(def day1-2 (day1 expense-3-combinations
+                  (partial filter (fn [[a b c]] (= (+ a b c) 2020)))))

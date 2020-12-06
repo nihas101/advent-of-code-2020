@@ -9,20 +9,21 @@
           (mapv (fn [tuple] (string/split tuple #":"))
                 (string/split passport #"\s+"))))
 
-;; cid is optional
-(defonce ^:private required-keys [:byr :iyr :eyr :hgt :hcl :ecl :pid])
+(s/def ::passport-1 #(empty? (remove (set (keys %))
+                                     [:byr :iyr :eyr :hgt :hcl :ecl :pid])))
 
-(defn- valid-passport-1? [passport]
-  (empty? (remove (set (keys passport)) required-keys)))
-
-(defn day4-1
+(defn day4
   "https://adventofcode.com/2020/day/4"
-  ([]
-   (day4-1 (slurp "resources/passports.txt")))
-  ([passport-batch]
-   (let [passports (map parse-passport
-                        (string/split passport-batch #"\n\n|\r\n\r\n"))]
-     (count (filter valid-passport-1? passports)))))
+  [passport-spec]
+  (fn day4-fn
+    ([]
+     (day4-fn (slurp "resources/passports.txt")))
+    ([passport-batch]
+     (let [passports (map parse-passport
+                          (string/split passport-batch #"(\n\r?){2,}"))]
+       (count (filter (partial s/valid? passport-spec) passports))))))
+
+(def day4-1 (day4 ::passport-1))
 
 (defonce ^:private pid-regex
   (re-pattern
@@ -45,15 +46,7 @@
                     #(= (re-matches pid-regex %) %)))
 (s/def ::cid any?)
 
-(s/def ::passport (s/keys :req-un [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
-                          :opt-un [::cid]))
+(s/def ::passport-2 (s/keys :req-un [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
+                            :opt-un [::cid]))
 
-(defn day4-2
-  "https://adventofcode.com/2020/day/4"
-  ([]
-   (day4-2 (slurp "resources/passports.txt")))
-  ([passport-batch]
-   (let [passports (map parse-passport
-                        ;; Split on empty lines
-                        (string/split passport-batch #"\n\n|\r\n\r\n"))]
-     (count (filter (partial s/valid? ::passport) passports)))))
+(def day4-2 (day4 ::passport-2))
