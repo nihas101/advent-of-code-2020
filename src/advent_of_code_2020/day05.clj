@@ -28,6 +28,7 @@
    (map seat->seat-id)))
 
 (defn day5-1
+  "https://adventofcode.com/2020/day/5"
   ([] (day5-1 (string/split-lines (slurp "resources/boarding_passes.txt"))))
   ([boarding-passes]
    (reduce max
@@ -44,6 +45,7 @@
       :else (recur as res))))
 
 (defn day5-2
+  "https://adventofcode.com/2020/day/5"
   ([] (day5-2 (string/split-lines (slurp "resources/boarding_passes.txt"))))
   ([boarding-passes]
    (first
