@@ -12,12 +12,14 @@
 (s/def ::passport-1 #(empty? (remove (set (keys %))
                                      [:byr :iyr :eyr :hgt :hcl :ecl :pid])))
 
+(defonce ^:private passports (slurp "resources/passports.txt"))
+
 (defn day4
   "https://adventofcode.com/2020/day/4"
   [passport-spec]
   (fn day4-fn
     ([]
-     (day4-fn (slurp "resources/passports.txt")))
+     (day4-fn passports))
     ([passport-batch]
      (let [passports (map parse-passport
                           (string/split passport-batch #"(\n\r?){2,}"))]

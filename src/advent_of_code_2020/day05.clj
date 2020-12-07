@@ -27,9 +27,12 @@
    (map boarding-pass->seat)
    (map seat->seat-id)))
 
+(defonce ^:private boarding-passes
+  (string/split-lines (slurp "resources/boarding_passes.txt")))
+
 (defn day5-1
   "https://adventofcode.com/2020/day/5"
-  ([] (day5-1 (string/split-lines (slurp "resources/boarding_passes.txt"))))
+  ([] (day5-1 boarding-passes))
   ([boarding-passes]
    (reduce max
            (transduce boarding-pass->seat-id conj boarding-passes))))
@@ -46,7 +49,7 @@
 
 (defn day5-2
   "https://adventofcode.com/2020/day/5"
-  ([] (day5-2 (string/split-lines (slurp "resources/boarding_passes.txt"))))
+  ([] (day5-2 boarding-passes))
   ([boarding-passes]
    (first
     (remove-neighbouring

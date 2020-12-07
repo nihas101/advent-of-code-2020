@@ -16,14 +16,16 @@
 (defn- policy-fulfilled-1? [{:keys [a b letter password]}]
   (<= a (get (frequencies password) letter 0) b))
 
+(defonce ^:private passwords
+  (parse-password+policies
+   (string/split-lines (slurp "resources/passwords.txt"))))
+
 (defn day2
   "https://adventofcode.com/2020/day/2"
   [policy-fulfilled?]
   (fn day2-fn
     ([]
-     (let [password-policies (string/split-lines (slurp "resources/passwords.txt"))
-           p (parse-password+policies password-policies)]
-       (day2-fn p)))
+     (day2-fn passwords))
     ([p]
      (count (filter policy-fulfilled? p)))))
 

@@ -11,15 +11,17 @@
       (recur ys (concat res (mapv conj (repeat (conj prefix y)) ys)))
       res)))
 
+(defonce ^:private expenses
+  (map (fn [x] (Integer/parseInt x))
+       (string/split-lines
+        (slurp "resources/expense_report.txt"))))
+
 (defn- day1
   "https://adventofcode.com/2020/day/1"
   [combinator filter]
   (fn day1-fn
     ([]
-     (let [expenses (map (fn [x] (Integer/parseInt x))
-                         (string/split-lines
-                          (slurp "resources/expense_report.txt")))]
-       (day1-fn expenses)))
+     (day1-fn expenses))
     ([expenses]
      (->> expenses
           (combinator)

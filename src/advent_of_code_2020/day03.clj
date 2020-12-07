@@ -44,10 +44,13 @@
         (take-while (fn [[_ y]] (= y (mod y height)))
                     (iterate (partial next-step r d) [r d]))))
 
+(defonce ^:private trees
+  (parse-map (slurp "resources/tree_map.txt")))
+
 (defn day3-1
   "https://adventofcode.com/2020/day/3"
   ([r d]
-   (day3-1 (parse-map (slurp "resources/tree_map.txt")) r d))
+   (day3-1 trees r d))
   ([tree-map r d]
    (let [slope (follow-slope tree-map r d)]
      (count (filter (fn [[x y]] (get-in tree-map [y x])) slope)))))
@@ -55,7 +58,7 @@
 (defn day3-2
   "https://adventofcode.com/2020/day/3"
   ([]
-   (day3-2 (parse-map (slurp "resources/tree_map.txt"))))
+   (day3-2 trees))
   ([tree-map]
    (reduce *
            (map (fn [[r d]] (day3-1 tree-map r d))

@@ -6,11 +6,13 @@
 (defn- distinct-answeres [group]
   (count (distinct (apply concat group))))
 
+(defonce ^:private customs-answers
+  (map #(string/split % #"\s+")
+       (string/split (slurp "resources/customs_answers.txt") #"(\n\r?){2,}")))
+
 (defn- day6
   "https://adventofcode.com/2020/day/6"
-  ([the-count] (day6 the-count
-                     (map #(string/split % #"\s+")
-                          (string/split (slurp "resources/customs_answers.txt") #"(\n\r?){2,}"))))
+  ([the-count] (day6 the-count customs-answers))
   ([the-count grouped-customs-answers]
    (reduce + (map the-count grouped-customs-answers))))
 
