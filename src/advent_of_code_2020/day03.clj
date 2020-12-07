@@ -40,9 +40,11 @@
   "Returns all positions in the slope created by going right `r` and `down `d`
    times on the given map."
   [{:keys [height width]} r d]
-  (mapv (fn [[x y]] [(mod x width) y])
-        (take-while (fn [[_ y]] (= y (mod y height)))
-                    (iterate (partial next-step r d) [r d]))))
+  (eduction
+   (comp
+    (take-while (fn [[_ y]] (= y (mod y height))))
+    (map (fn [[x y]] [(mod x width) y])))
+   (iterate (partial next-step r d) [r d])))
 
 (defonce ^:private trees
   (parse-map (slurp "resources/tree_map.txt")))
@@ -60,6 +62,5 @@
   ([]
    (day3-2 trees))
   ([tree-map]
-   (reduce *
-           (map (fn [[r d]] (day3-1 tree-map r d))
-                [[1 1] [3 1] [5 1] [7 1] [1 2]]))))
+   (transduce (map (fn [[r d]] (day3-1 tree-map r d))) *
+              [[1 1] [3 1] [5 1] [7 1] [1 2]])))

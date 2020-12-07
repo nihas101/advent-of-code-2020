@@ -38,14 +38,16 @@
    conj
    rules-map))
 
-(defn- aggregate-rules [rules-map [bag rules]]
-  (reduce (fn [r-m b] (update r-m b (partial sets/union rules)))
-          rules-map
-          (can-contain-bag rules-map bag)))
+(def ^:private aggregate-rules
+  (memoize ;; Cache sub-aggregates to speed up transitive-bag-closure-step
+   (fn [rules-map [bag rules]]
+     (reduce (fn [r-m b] (update r-m b (partial sets/union rules)))
+             rules-map
+             (can-contain-bag rules-map bag)))))
 
 (defn- transitive-bag-closure-step [[_ new-rules-map]]
-  [new-rules-map
-   (reduce aggregate-rules new-rules-map new-rules-map)])
+  [new-rules-map (reduce aggregate-rules new-rules-map
+                         new-rules-map)])
 
 (def ^:private until-eq-first (comp
                                (drop-while (fn [[a b]] (not= a b)))
@@ -55,8 +57,9 @@
   (reduce (fn [r-m [b r]] (assoc r-m b (set (keys r)))) rules-map rules-map))
 
 (defn- transitive-bag-closure [rules-map]
-  (first (sequence until-eq-first
-                   (iterate transitive-bag-closure-step [nil (rules->set rules-map)]))))
+  (first (eduction until-eq-first
+                   (iterate transitive-bag-closure-step
+                            [nil (rules->set rules-map)]))))
 
 (defonce ^:private bag-rules
   (parse-rules (slurp "resources/bag_rules.txt")))
@@ -73,6 +76,7 @@
 
 (defn- containing-bag-count [rules-map bag]
   (loop [[[b a] & r :as bags] [[bag 1]]
+         ;; Do not count the top level bag
          amount -1]
     (if (seq bags)
       (recur (concat r (multiply-bag-amount a (get rules-map b)))

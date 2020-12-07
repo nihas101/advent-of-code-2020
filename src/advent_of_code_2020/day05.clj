@@ -34,8 +34,7 @@
   "https://adventofcode.com/2020/day/5"
   ([] (day5-1 boarding-passes))
   ([boarding-passes]
-   (reduce max
-           (transduce boarding-pass->seat-id conj boarding-passes))))
+   (transduce boarding-pass->seat-id max 0 boarding-passes)))
 
 (defn- remove-neighbouring [rem c]
   (loop [[a & as :as c] c

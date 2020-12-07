@@ -4,28 +4,33 @@
    [clojure.spec.alpha :as s]))
 
 (defn- parse-passport [passport]
-  (reduce (fn [p [k v]] (assoc p (keyword k) v))
-          {}
-          (mapv (fn [tuple] (string/split tuple #":"))
-                (string/split passport #"\s+"))))
+  (transduce
+   (map (fn [tuple] (string/split tuple #":")))
+   (fn
+     ([] {})
+     ([p] p)
+     ([p [k v]] (assoc p (keyword k) v)))
+   (string/split passport #"\s+")))
 
-(s/def ::passport-1 #(empty? (remove (set (keys %))
-                                     [:byr :iyr :eyr :hgt :hcl :ecl :pid])))
+(s/def ::passport-1 #(every? (set (keys %))
+                             [:byr :iyr :eyr :hgt :hcl :ecl :pid]))
 
 (defonce ^:private passports (slurp "resources/passports.txt"))
 
 (defn day4
   "https://adventofcode.com/2020/day/4"
-  [passport-spec]
-  (fn day4-fn
-    ([]
-     (day4-fn passports))
-    ([passport-batch]
-     (let [passports (map parse-passport
-                          (string/split passport-batch #"(\n\r?){2,}"))]
-       (count (filter (partial s/valid? passport-spec) passports))))))
+  ([passport-spec]
+   (day4 passport-spec passports))
+  ([passport-spec passport-batch]
+   (count
+    (transduce
+     (comp
+      (map parse-passport)
+      (filter (partial s/valid? passport-spec)))
+     conj
+     (string/split passport-batch #"(\n\r?){2,}")))))
 
-(def day4-1 (day4 ::passport-1))
+(def day4-1 (partial day4 ::passport-1))
 
 (defonce ^:private pid-regex
   (re-pattern
@@ -51,4 +56,4 @@
 (s/def ::passport-2 (s/keys :req-un [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
                             :opt-un [::cid]))
 
-(def day4-2 (day4 ::passport-2))
+(def day4-2 (partial day4 ::passport-2))

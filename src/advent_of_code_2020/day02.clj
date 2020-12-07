@@ -22,14 +22,12 @@
 
 (defn day2
   "https://adventofcode.com/2020/day/2"
-  [policy-fulfilled?]
-  (fn day2-fn
-    ([]
-     (day2-fn passwords))
-    ([p]
-     (count (filter policy-fulfilled? p)))))
+  ([policy-fulfilled?]
+   (day2 policy-fulfilled? passwords))
+  ([policy-fulfilled? passwords]
+   (count (filter policy-fulfilled? passwords))))
 
-(def day2-1 (day2 policy-fulfilled-1?))
+(def day2-1 (partial day2 policy-fulfilled-1?))
 
 (defn- policy-fulfilled-2? [{:keys [a b letter password]}]
   (cond
@@ -37,4 +35,4 @@
     (= (get password (dec a)) letter) (not= (get password (dec b)) letter)
     :else (= (get password (dec b)) letter)))
 
-(def day2-2 (day2 policy-fulfilled-2?))
+(def day2-2 (partial day2 policy-fulfilled-2?))
