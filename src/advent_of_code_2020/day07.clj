@@ -39,7 +39,7 @@
    rules-map))
 
 (def ^:private aggregate-rules
-  (memoize ;; Cache sub-aggregates to speed up transitive-bag-closure-step
+  (memoize ;; Cache sub-aggregates to speed up later parts of transitive-bag-closure-step
    (fn [rules-map [bag rules]]
      (reduce (fn [r-m b] (update r-m b (partial sets/union rules)))
              rules-map
