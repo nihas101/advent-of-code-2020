@@ -1,4 +1,4 @@
-# Advent of code 2020
+# Advent of code 2020 ![Clojure CI](https://github.com/nihas101/advent-of-code-2020/workflows/Clojure%20CI/badge.svg)
 A reopsitory containing my solutions to the [Advent of code 2020](https://adventofcode.com)
 
 ## Requirements
