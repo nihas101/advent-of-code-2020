@@ -39,9 +39,10 @@
   ([preamble-length xmas-code]
    (invalid-xmas preamble-length xmas-code)))
 
-(defn take-until
+(defn take-while-including
   "Returns a transducer, which returns items from coll until
-   (pred item) returns logical false (including the item for which pred was false)."
+   (pred item) returns logical false (including the first item
+   for which pred was false)."
   [pred]
   (fn [rf]
     (fn
@@ -70,8 +71,8 @@
    (let [v (concat (take preamble-length xmas-code)
                    (eduction
                     (comp
-                     (take-until (fn [[_ preamble-sums x _]]
-                                   (some #{x} preamble-sums)))
+                     (take-while-including (fn [[_ preamble-sums x _]]
+                                             (some #{x} preamble-sums)))
                      (map #(nth % 2))) ; Get the numbers up to and including the invalid one
                     conj
                     (xmas-steps preamble-length xmas-code)))
