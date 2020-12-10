@@ -13,10 +13,10 @@
      (-> (concat (mapv - sorted-adapters (conj sorted-adapters 0)) [3])
          frequencies
          ((juxt #(get % 1) #(get % 3)))
-         ((fn [[a b]] (* ^long a ^long b)))))))
+         ((fn [[^long a ^long b]] (* a b)))))))
 
 (def adapter-combinations
-  (memoize ;; Cache subresults to speed up calucation
+  (memoize ;; Cache subresults to speed up calculations
    (fn [[a _ c & ads :as sorted-adapters]]
      (cond
        (or (not c)) (long 1)
