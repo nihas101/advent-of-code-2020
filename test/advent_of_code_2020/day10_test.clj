@@ -40,6 +40,10 @@
   (testing "Day 10 - Part 2 - Example 5"
     (is (= 4 (day10-2 [1 2 3])))))
 
+(deftest day10-2-example-6-test
+  (testing "Day 10 - Part 2 - Example 6"
+    (is (= 6 (day10-2 [1 1 1])))))
+
 (deftest day10-2-test
   (testing "Day 10 - Part 2"
     (is (= 56693912375296 (day10-2)))))
