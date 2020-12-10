@@ -2,10 +2,10 @@
   (:require
    [clojure.string :as string]))
 
-(defn- lower-half [a b]
+(defn- lower-half [^long a ^long b]
   [a (Math/floor (/ (+ a b) 2))])
 
-(defn- upper-half [a b]
+(defn- upper-half [^long a ^long b]
   [(Math/ceil (/ (+ a b) 2)) b])
 
 (defn- boarding-pass->seat [boarding-pass]
@@ -19,7 +19,7 @@
       (= b \R) (recur column (upper-half r-low r-up) bs)
       (= b \L) (recur column (lower-half r-low r-up) bs))))
 
-(defn- seat->seat-id [[row column]]
+(defn- seat->seat-id [[^long row ^long column]]
   (+ (* row 8) column))
 
 (defonce ^:private boarding-pass->seat-id
@@ -37,7 +37,7 @@
    (transduce boarding-pass->seat-id max 0 boarding-passes)))
 
 (defn- remove-neighbouring [rem c]
-  (loop [[a & as :as c] c
+  (loop [[^long a & as :as c] c
          res []]
     (cond
       (empty? c) res

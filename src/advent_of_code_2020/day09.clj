@@ -76,4 +76,4 @@
                      (map #(nth % 2))) ; Get the numbers up to and including the invalid one
                     (xmas-steps preamble-length xmas-code)))
          cont (contiguous-sum (butlast v) (last v))]
-     (+ (reduce min cont) (reduce max cont)))))
+     (+ ^long (reduce min cont) ^long (reduce max cont)))))

@@ -29,7 +29,7 @@
 
 (def day2-1 (partial day2 policy-fulfilled-1?))
 
-(defn- policy-fulfilled-2? [{:keys [a b letter password]}]
+(defn- policy-fulfilled-2? [{:keys [^long a ^long b letter password]}]
   (cond
     (< (count password) (dec b)) false
     (= (get password (dec a)) letter) (not= (get password (dec b)) letter)

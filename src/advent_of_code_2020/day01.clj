@@ -28,7 +28,8 @@
         (apply *))))
 
 (def day1-1 (partial day1 (partial combinations [])
-                     (partial filter (fn [[a b]] (= (+ a b) 2020)))))
+                     (partial filter (fn [[^long a ^long b]]
+                                       (= (+ a b) 2020)))))
 
 (defn- expense-3-combinations
   "Creates all possible combinations of 3 expense entries"
@@ -40,4 +41,5 @@
       res)))
 
 (def day1-2 (partial day1 expense-3-combinations
-                     (partial filter (fn [[a b c]] (= (+ a b c) 2020)))))
+                     (partial filter (fn [[^long a ^long b ^long c]]
+                                       (= (+ a b c) 2020)))))

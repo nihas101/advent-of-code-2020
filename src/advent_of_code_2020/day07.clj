@@ -72,15 +72,15 @@
             (transitive-bag-closure rules-map)))))
 
 (defn- multiply-bag-amount [multiplier bags]
-  (map (fn [[bag amount]] [bag (* amount multiplier)]) bags))
+  (map (fn [[bag amount]] [bag (* ^long amount ^long multiplier)]) bags))
 
 (defn- containing-bag-count [rules-map bag]
   (loop [[[b a] & r :as bags] [[bag 1]]
          ;; Do not count the top level bag
-         amount -1]
+         amount (long -1)]
     (if (seq bags)
       (recur (concat r (multiply-bag-amount a (get rules-map b)))
-             (+ amount a))
+             (+ amount ^long a))
       amount)))
 
 (defn day7-2

@@ -7,7 +7,7 @@
   [s value]
   (loop [curr 0
          idxs #{}]
-    (if-let [idx (string/index-of s value curr)]
+    (if-let [^long idx (string/index-of s value curr)]
       (recur (inc idx) (conj idxs idx))
       idxs)))
 
@@ -33,7 +33,7 @@
 
 (defn- next-step
   "Creates the next step from a delta and a previous one"
-  [step-x step-y [x y]]
+  [^long step-x ^long step-y [^long x ^long y]]
   [(+ x step-x) (+ y step-y)])
 
 (defn- follow-slope
