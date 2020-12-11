@@ -15,22 +15,17 @@ LLLLLLLLLL
 L.LLLLLL.L
 L.LLLLL.LL")
 
-(deftest day11-1-example-read-layout-test
-  (testing "Day 11 - Part 1 - Example 1 - read-layout"
-    (is (= example-layout
-           (chair-layout->string
-            (#'advent-of-code-2020.day11/read-layout example-layout))))))
-
 (def game-of-chairs-1
   (let [lo (#'advent-of-code-2020.day11/read-layout example-layout)
-        pos (transduce (comp (filter (fn [[_ c]] (not= c \.)))
+        lo (reduce #'advent-of-code-2020.day11/neighbours lo (keys lo))
+        pos (transduce (comp (filter (fn [[_ [c]]] (not= c \.)))
                              (map first))
                        conj
                        lo)]
     (iterate (fn [[layout chair-pos]]
                [(#'advent-of-code-2020.day11/game-of-chairs-step
-                 #'advent-of-code-2020.day11/neighbouring-freqs
-                 layout chair-pos 3)
+                 layout
+                 chair-pos 3)
                 chair-pos])
              [lo pos])))
 
@@ -120,9 +115,7 @@ L.#.L..#..
 
 (deftest day11-2-in-view-freqs-example-1-test
   (testing "Day 11 - Part 2 - in-view-freqs - Example"
-    (is (= {\# 8}
-           (#'advent-of-code-2020.day11/in-view-freqs
-            (#'advent-of-code-2020.day11/read-layout ".......#.
+    (let [lo (#'advent-of-code-2020.day11/read-layout ".......#.
 ...#.....
 .#.......
 .........
@@ -130,37 +123,45 @@ L.#.L..#..
 ....#....
 .........
 #........
-...#.....") 3 4)))))
+...#.....")]
+      (is (= {\# 8}
+             (#'advent-of-code-2020.day11/chair-freqs
+              (reduce (partial #'advent-of-code-2020.day11/in-view lo)
+                      lo (keys lo)) 3 4))))))
 
 (deftest day11-2-in-view-freqs-example-2-test
   (testing "Day 11 - Part 2 - in-view-freqs - Example 2"
-    (is (= {\L 1 nil 7}
-           (#'advent-of-code-2020.day11/in-view-freqs
-            (#'advent-of-code-2020.day11/read-layout ".............
+    (let [lo (#'advent-of-code-2020.day11/read-layout ".............
 .L.L.#.#.#.#.
-.............") 1 1)))))
+.............")]
+      (is (= {\L 1 nil 7}
+             (#'advent-of-code-2020.day11/chair-freqs
+              (reduce (partial #'advent-of-code-2020.day11/in-view lo) lo (keys lo))
+              1 1))))))
 
 (deftest day11-2-in-view-freqs-example-3-test
   (testing "Day 11 - Part 2 - in-view-freqs - Example 3"
-    (is (= {nil 8}
-           (#'advent-of-code-2020.day11/in-view-freqs
-            (#'advent-of-code-2020.day11/read-layout ".##.##.
+    (let [lo (#'advent-of-code-2020.day11/read-layout ".##.##.
 #.#.#.#
 ##...##
 ...L...
 ##...##
 #.#.#.#
-.##.##.") 3 3)))))
+.##.##.")]
+      (is (= {nil 8}
+             (#'advent-of-code-2020.day11/chair-freqs
+              (reduce (partial #'advent-of-code-2020.day11/in-view lo) lo (keys lo))
+              3 3))))))
 
 (def game-of-chairs-2
   (let [lo (#'advent-of-code-2020.day11/read-layout example-layout)
-        pos (transduce (comp (filter (fn [[_ c]] (not= c \.)))
+        lo (reduce (partial #'advent-of-code-2020.day11/in-view lo) lo (keys lo))
+        pos (transduce (comp (filter (fn [[_ [c]]] (not= c \.)))
                              (map first))
                        conj
                        lo)]
     (iterate (fn [[layout chair-pos]]
                [(#'advent-of-code-2020.day11/game-of-chairs-step
-                 #'advent-of-code-2020.day11/in-view-freqs
                  layout chair-pos 4)
                 chair-pos])
              [lo pos])))

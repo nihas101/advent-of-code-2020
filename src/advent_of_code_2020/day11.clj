@@ -14,8 +14,9 @@
 (defn chair-layout->string [layout]
   (let [row-size (inc ^long (apply max (mapv first (keys layout))))]
     (transduce
-     (comp (map second)
-           (partition-all row-size)
+     (comp (map second) ; Get the chair and neighbours
+           (map first)  ; Only take the chair
+           (partition-all row-size) ; Split back into rows
            (fn stringify [rf]
              (fn ([] (rf))
                ([result] (rf (string/trim result)))
@@ -27,64 +28,82 @@
 (defonce ^:private chair-layout
   (read-layout (slurp "resources/chair_layout.txt")))
 
-(defn- neighbouring-freqs [layout ^long x ^long y]
-  (frequencies (for [[dx dy] [[-1 -1] [0 -1] [1 -1]
-                              [-1  0]        [1  0]
-                              [-1  1] [0  1] [1  1]]]
-                 (get layout [(+ x dx) (+ y dy)] \.))))
+(defn- chair-freqs [layout ^long x ^long y]
+  (frequencies (eduction
+                (comp (map (fn [n] (get layout n)))
+                      (map first))
+                (second (get layout [x y])))))
 
-(defn- handle-empty-chair [chair-freqs new-layout layout x y]
+(defn- neighbour-pos [^long x ^long y]
+  (mapv (fn [[^long dx ^long dy]] [(+ x dx) (+ y dy)]) [[-1 -1] [0 -1] [1 -1]
+                                                        [-1  0]        [1  0]
+                                                        [-1  1] [0  1] [1  1]]))
+
+;; We first calculate all neighbours once and then only lookup those neighbours
+(defn- neighbours [layout [^long x ^long y]]
+  (if (= \L (get layout [x y]))
+    (update layout [x y] (fn [c] [c (neighbour-pos x y)]))
+    (update layout [x y] (fn [c] [c nil])))) ; No reason to calc neighbours for the floor
+
+(defn- handle-empty-chair [new-layout layout x y]
   (if (nil? (get (chair-freqs layout x y) \#))
-    (assoc new-layout [x y] \#)
+    (assoc-in new-layout [[x y] 0] \#)
     new-layout))
 
-(defn- handle-occupied-chair [chair-freqs new-layout layout x y tol]
+(defn- handle-occupied-chair [new-layout layout x y tol]
   (if (< ^long tol ^long (get (chair-freqs layout x y) \# 0))
-    (assoc new-layout [x y] \L)
+    (assoc-in new-layout [[x y] 0] \L)
     new-layout))
 
-(defn- game-of-chairs-step [f layout chair-pos tol]
+(defn- game-of-chairs-step [layout chair-pos tol]
   (first
    (reduce (fn [[n-lo lo] [x y]]
-             (if (= (get lo [x y]) \L)
-               [(handle-empty-chair f n-lo lo x y) lo]
-               [(handle-occupied-chair f n-lo lo x y tol) lo]))
+             (if (= (first (get lo [x y])) \L)
+               [(handle-empty-chair n-lo lo x y) lo]
+               [(handle-occupied-chair n-lo lo x y tol) lo]))
            [layout layout]
            chair-pos)))
 
-(defn day11 [f chair-layout tolerance]
+(defn day11 [chair-layout tolerance]
   (loop [new-chair-layout chair-layout
          chair-layout nil
-         chair-pos (transduce (comp (remove (fn [[_ c]] (= c \.)))
+         chair-pos (transduce (comp (remove (fn [[_ [c]]] (= c \.)))
                                     (map first))
                               conj
                               new-chair-layout)]
     (if (= new-chair-layout chair-layout)
-      (count (filter (fn [[_ c]] (= c \#)) new-chair-layout))
-      (recur (game-of-chairs-step f new-chair-layout chair-pos tolerance)
+      (count (filter (fn [[_ [c]]] (= c \#)) new-chair-layout))
+      (recur (game-of-chairs-step new-chair-layout chair-pos tolerance)
              new-chair-layout
              chair-pos))))
 
 (defn day11-1
   ([] (day11-1 chair-layout))
-  ([chair-layout] (day11 neighbouring-freqs chair-layout 3)))
+  ([chair-layout] (day11 (reduce neighbours chair-layout
+                                 (keys chair-layout)) 3)))
 
+;; We first calculate all chairs in view once and then only lookup those neighbours
 (defn- chair-in-view [[layout ^long x ^long y] [^long dx ^long dy]]
   (let [new-x (+ x dx)
         new-y (+ y dy)
         chair (get layout [new-x new-y])]
     (if (contains? #{\L \# nil} chair)
-      (reduced chair)
+      (reduced [new-x new-y])
       [layout new-x new-y])))
 
-(defn- in-view-freqs [layout ^long x ^long y]
-  (frequencies
-   (mapv (fn [delta]
-           (reduce chair-in-view [layout x y] (repeat delta)))
-         [[-1 -1] [0 -1] [1 -1]
-          [-1  0]        [1  0]
-          [-1  1] [0  1] [1  1]])))
+(defn- in-view-pos [layout ^long x ^long y]
+  (mapv (fn [delta]
+          (reduce chair-in-view [layout x y] (repeat delta)))
+        [[-1 -1] [0 -1] [1 -1]
+         [-1  0]        [1  0]
+         [-1  1] [0  1] [1  1]]))
+
+(defn- in-view [init-layout layout [^long x ^long y]]
+  (if (= \L (get init-layout [x y]))
+    (update layout [x y] (fn [c] [c (in-view-pos init-layout x y)]))
+    (update layout [x y] (fn [c] [c nil])))); No reason to calc in-view for the floor
 
 (defn day11-2
   ([] (day11-2 chair-layout))
-  ([chair-layout] (day11 in-view-freqs chair-layout 4)))
+  ([chair-layout] (day11 (reduce (partial in-view chair-layout)
+                                 chair-layout (keys chair-layout)) 4)))
