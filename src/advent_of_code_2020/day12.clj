@@ -16,7 +16,7 @@
   {:direction 90
    :position [0 0]})
 
-(defmulti execute-instruction (fn [{:keys [waypoint]} [d]] (println :waypoint waypoint :d d) [d (nil? waypoint)]))
+(defmulti execute-instruction (fn [{:keys [waypoint]} [d]] [d (nil? waypoint)]))
 
 (defmethod execute-instruction [\N true] [s [_ v]]
   (update-in s [:position 1] (partial + v)))
