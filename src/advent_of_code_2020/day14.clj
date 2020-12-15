@@ -41,7 +41,7 @@
   ([version] (day14 version (read-program version docking-program)))
   ([version instr]
    (reduce +
-           (-> (fn [m i] (execute-program m i))
+           (-> execute-program
                (reduce ,,, {:version version} instr)
                :mem
                vals))))

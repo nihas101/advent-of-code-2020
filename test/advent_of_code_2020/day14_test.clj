@@ -3,7 +3,6 @@
    [clojure.test :refer :all]
    [advent-of-code-2020.day14 :refer :all]))
 
-
 (defonce ^:private example-input
   "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
 mem[8] = 11
