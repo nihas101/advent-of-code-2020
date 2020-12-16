@@ -1,5 +1,4 @@
-(ns advent-of-code-2020.day15
-  (:import [java.util Arrays]))
+(ns advent-of-code-2020.day15)
 
 (defonce ^:private init-numbers [2 0 6 12 1 3])
 
@@ -30,7 +29,6 @@
   [^long turns init]
   (let [len (inc ^long (reduce max (conj init turns)))
         arr (long-array len)]
-    (Arrays/fill arr 0 turns (long 0))
     (doseq [[^long n ^long ct] (mapv vector (butlast init) (rest (range)))]
       (aset arr n ct))
     arr))
