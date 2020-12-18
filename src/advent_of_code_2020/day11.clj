@@ -47,22 +47,23 @@
 
 (defn- handle-empty-chair [new-layout layout x y]
   (if (nil? (get (chair-freqs layout x y) \#))
-    (assoc-in new-layout [[x y] 0] \#)
+    (assoc! new-layout [x y] [\# (get-in layout [[x y] 1])])
     new-layout))
 
 (defn- handle-occupied-chair [new-layout layout x y tol]
   (if (< ^long tol ^long (get (chair-freqs layout x y) \# 0))
-    (assoc-in new-layout [[x y] 0] \L)
+    (assoc! new-layout [x y] [\L (get-in layout [[x y] 1])])
     new-layout))
 
 (defn- game-of-chairs-step [layout chair-pos tol]
-  (first
-   (reduce (fn [[n-lo lo] [x y]]
-             (if (= (first (get lo [x y])) \L)
-               [(handle-empty-chair n-lo lo x y) lo]
-               [(handle-occupied-chair n-lo lo x y tol) lo]))
-           [layout layout]
-           chair-pos)))
+  (persistent!
+   (first
+    (reduce (fn [[n-lo lo] [x y]]
+              (if (= (first (get lo [x y])) \L)
+                [(handle-empty-chair n-lo lo x y) lo]
+                [(handle-occupied-chair n-lo lo x y tol) lo]))
+            [(transient layout) layout]
+            chair-pos))))
 
 (defn day11 [chair-layout tolerance]
   (loop [new-chair-layout chair-layout
