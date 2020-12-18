@@ -1,46 +1,37 @@
 (ns advent-of-code-2020.day18
   (:require
-   [clojure.string :as string])
-  (:import
-   [java.io StringReader PushbackReader]))
+   [clojure.string :as string]))
 
-(defn- reorder
+(defn- exps->sexps
   "Reorders infix notation to prefix, where operations contained in `low-prec`
    are treated with lower precedence than the other operations."
-  ([low-prec a] (if (sequential? a)
-                  (reorder low-prec
-                           (reorder low-prec (first a))
-                           (rest a)) a))
-  ([low-prec a [f b & es]]
-   (let [rb (reorder low-prec b)]
+  ([low-prec aexp] (if (sequential? aexp)
+                     (exps->sexps low-prec (exps->sexps low-prec (first aexp))
+                                  (rest aexp))
+                     aexp))
+  ([low-prec asexp [f b & es]]
+   (let [bsexp (exps->sexps low-prec b)]
      (cond
-       (empty? es) `(~f ~a ~rb)
-       (contains? low-prec f) `(~f ~a ~(reorder low-prec rb es))
-       :else (recur low-prec `(~f ~a ~rb) es)))))
+       (empty? es) `(~f ~asexp ~bsexp)
+       (contains? low-prec f) `(~f ~asexp ~(exps->sexps low-prec bsexp es))
+       :else (recur low-prec `(~f ~asexp ~bsexp) es)))))
 
-(defn- read-input [reorder s]
-  (with-open [r (PushbackReader. (StringReader. s))]
-    (loop [exprs []]
-      (let [expr (read r nil :eof)]
-        (if (not= expr :eof)
-          ;; Keep reading forms
-          (recur (conj exprs expr))
-          ;; Reorder the forms into clojure code
-          (reorder exprs))))))
+(defn- read-input [low-prec input]
+  (exps->sexps low-prec (read-string (str "(" input ")"))))
 
 (defonce ^:private homework
   (string/split-lines (slurp "resources/homework.txt")))
 
-(defn day18-fn [reorder]
+(defn day18-fn [low-prec]
   (fn day18
     ([] (day18 homework))
     ([exprs]
      (transduce
-      (comp (map (partial read-input reorder))
+      (comp (map (partial read-input low-prec))
             (map eval))
       +
       exprs))))
 
-(def day18-1 (day18-fn (partial reorder #{})))
+(def day18-1 (day18-fn #{}))
 
-(def day18-2 (day18-fn (partial reorder #{'*}))) ; Delay evaluation of *
+(def day18-2 (day18-fn #{'*})) ; Delay evaluation of *
