@@ -16,7 +16,7 @@
   ([rules messages]
    (transduce
     ;; The real input is not in numerical order, so we have to
-    ;; explicitely define rule 0 as starting point
+    ;; explicitly define rule 0 as starting point
     (comp (map (insta/parser rules :start :0))
           (remove insta/failure?))
     (fn counter
