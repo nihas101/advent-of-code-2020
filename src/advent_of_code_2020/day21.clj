@@ -83,13 +83,15 @@
 (defn day21-1
   ([] (day21-1 allergens))
   ([{:keys [allergens frequencies]}]
-   (let [[_ unresolved ingredients] (assign-allergens allergens)]
+   (let [[_ unresolved ingredients] (assign-allergens allergens)
+         unresolved-ingredients (transduce (comp (mapcat second) (map first))
+                                           conj #{} unresolved)]
      ;; The ingredients which were not assigned and do not appear in
      ;; the unresolved allergen assignments definitely do not contain
      ;; allergens
      (transduce
       (comp
-       (remove (set (mapv first (mapcat second unresolved))))
+       (remove unresolved-ingredients)
        (map (fn [ingr] (get frequencies ingr))))
       +
       ingredients))))
