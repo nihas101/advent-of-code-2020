@@ -1,6 +1,7 @@
 (ns advent-of-code-2020.day04
   (:require
    [clojure.string :as string]
+   [advent-of-code-2020.utils :as u]
    [clojure.spec.alpha :as s]))
 
 (defn- parse-passport [passport]
@@ -28,7 +29,7 @@
       (map parse-passport)
       (filter (partial s/valid? passport-spec)))
      conj
-     (string/split passport-batch #"(\n\r?){2,}")))))
+     (u/split-sections passport-batch)))))
 
 (def day4-1 (partial day4 ::passport-1))
 

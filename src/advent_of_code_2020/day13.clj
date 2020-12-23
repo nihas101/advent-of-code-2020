@@ -1,5 +1,6 @@
 (ns advent-of-code-2020.day13
   (:require
+   [advent-of-code-2020.utils :as u]
    [clojure.string :as string]))
 
 (defn- read-bus-schedule [bus-schedule]
@@ -45,33 +46,6 @@
        first
        ((fn [[^long id ^long min-to-wait]] (* id min-to-wait))))))
 
-(defn- extended-gcd
-  "https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm"
-  [^long a ^long b]
-  (loop [[o-r r] [(long a) (long b)]
-         [o-s s] [(long 1) (long 0)]
-         [o-t t] [(long 0) (long 1)]]
-    (if (zero? r)
-      {:x o-s :y o-t
-       :gcd o-r
-       :quots [t s]}
-      (let [q (quot o-r r)]
-        (recur [r (- ^long o-r (* ^long q ^long r))]
-               [s (- ^long o-s (* ^long q ^long s))]
-               [t (- ^long o-t (* ^long q ^long t))])))))
-
-(defn- abs [^long x] (max x (- x)))
-
-(defn- crt
-  "https://brilliant.org/wiki/chinese-remainder-theorem/"
-  [as+nz]
-  (let [as (mapv first as+nz)
-        nz (mapv second as+nz)
-        N (reduce * nz)
-        ys (mapv (partial / N) nz)
-        zs (mapv :x (mapv extended-gcd ys nz))]
-    (mod (abs (reduce + (mapv * as ys zs))) N)))
-
 (defn day13-2
   ([] (day13-2 bus-schedule))
   ([bus-schedule]
@@ -80,7 +54,7 @@
        ((partial mapv vector (range)))
        ;; Filter the xs, because we don't them at this point anymore
        ((partial remove #(nil? (second %))))
-       crt)))
+       u/crt)))
 
 ;; This was my initial solution for part 2, which wasn't performant enough for
 ;; the real input

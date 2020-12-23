@@ -1,5 +1,6 @@
 (ns advent-of-code-2020.day06
   (:require
+   [advent-of-code-2020.utils :as u]
    [clojure.string :as string]
    [clojure.set :as sets]))
 
@@ -7,8 +8,8 @@
   (count (distinct (apply concat group))))
 
 (defonce ^:private customs-answers
-  (map #(string/split % #"\s+")
-       (string/split (slurp "resources/customs_answers.txt") #"(\n\r?){2,}")))
+  (mapv #(string/split % #"\s+")
+        (u/split-sections (slurp "resources/customs_answers.txt"))))
 
 (defn- day6
   "https://adventofcode.com/2020/day/6"

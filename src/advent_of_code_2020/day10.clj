@@ -1,10 +1,9 @@
 (ns advent-of-code-2020.day10
   (:require
-   [clojure.string :as string]))
+   [advent-of-code-2020.utils :as u]))
 
 (defonce ^:private adapters
-  (map #(Integer/parseInt %)
-       (string/split-lines (slurp "resources/adapters.txt"))))
+  (u/read-longs (slurp "resources/adapters.txt") u/line-endings))
 
 (defn day10-1
   ([] (day10-1 adapters))

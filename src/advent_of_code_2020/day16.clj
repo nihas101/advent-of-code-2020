@@ -1,5 +1,6 @@
 (ns advent-of-code-2020.day16
   (:require
+   [advent-of-code-2020.utils :as u]
    [clojure.string :as string]))
 
 (defn- read-rules [rules]
@@ -9,11 +10,10 @@
                              [(Integer/parseInt d) (Integer/parseInt e)]])
           (partition-all 5 r))))
 
-(defn- read-ticket [ticket]
-  (mapv #(Integer/parseInt %) (string/split ticket #",")))
+(defn- read-ticket [ticket] (u/read-longs ticket #","))
 
 (defn- read-input [input]
-  (let [[rules my-ticket other-tickets] (string/split input #"(\r?\n){2}")]
+  (let [[rules my-ticket other-tickets] (u/split-sections input)]
     {:rules (read-rules rules)
      :my-ticket (read-ticket (second (string/split-lines my-ticket)))
      :other-tickets (mapv read-ticket

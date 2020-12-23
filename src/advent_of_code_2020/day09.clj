@@ -1,6 +1,6 @@
 (ns advent-of-code-2020.day09
   (:require
-   [clojure.string :as string]))
+   [advent-of-code-2020.utils :as u]))
 
 (defn- add-to-coll [n c]
   (map (partial + n) c))
@@ -31,8 +31,7 @@
    2))
 
 (defonce ^:private xmas-code
-  (map #(Integer/parseInt %)
-       (string/split-lines (slurp "resources/xmas_code.txt"))))
+  (u/read-longs (slurp "resources/xmas_code.txt") u/line-endings))
 
 (defn day9-1
   ([] (day9-1 25 xmas-code))

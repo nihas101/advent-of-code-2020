@@ -1,17 +1,18 @@
 (ns advent-of-code-2020.day19
   (:require
+   [advent-of-code-2020.utils :as u]
    [clojure.string :as string]
    [instaparse.core :as insta]))
 
 (defonce ^:private rules+messages
-  (string/split (slurp "resources/messages.txt") #"(\r?\n){2}"))
+  (u/split-sections (slurp "resources/messages.txt")))
 
 (defn day19-1
   ([]
    (let [[rules messages] rules+messages]
      (day19-1 rules (string/split-lines messages))))
   ([rules+messages]
-   (let [[rules messages] (string/split rules+messages #"(\r?\n){2}")]
+   (let [[rules messages] (u/split-sections rules+messages)]
      (day19-1 rules (string/split-lines messages))))
   ([rules messages]
    (transduce
@@ -30,7 +31,7 @@
    (let [[rules messages] rules+messages]
      (day19-2 rules (string/split-lines messages))))
   ([rules+messages]
-   (let [[rules messages] (string/split rules+messages #"(\r?\n){2}")]
+   (let [[rules messages] (u/split-sections rules+messages)]
      (day19-2 rules (string/split-lines messages))))
   ([rules messages]
    (-> rules

@@ -28,11 +28,6 @@
   (testing "Day 13 - Part 1"
     (is (= 3606 (day13-1)))))
 
-(deftest gcd-test
-  (testing "extended gcd 240 and 46"
-    (is (= {:gcd 2 :x -9 :y 47 :quots [-120 23]}
-           (#'advent-of-code-2020.day13/extended-gcd 240 46)))))
-
 (deftest day13-2-example-1-test
   (testing "Day 13 - Part 2 - Example 1"
     (is (= 1068781

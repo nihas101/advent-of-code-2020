@@ -1,5 +1,6 @@
 (ns advent-of-code-2020.day20
   (:require
+   [advent-of-code-2020.utils :as u]
    [clojure.string :as string]))
 
 (defn- read-tile-id [tile-id]
@@ -25,7 +26,7 @@
      :image (read-image image)}))
 
 (defn- read-input [s]
-  (mapv read-tile (string/split s #"(\r?\n){2}")))
+  (mapv read-tile (u/split-sections s)))
 
 (defn- serialize-edge [edge]
   [(read-string (string/join (conj edge "2r"))) ; Ordinary value
