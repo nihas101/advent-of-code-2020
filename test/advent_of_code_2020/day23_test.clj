@@ -7,135 +7,79 @@
 
 (deftest day23-1-example-read-input-test
   (testing "Day 23 - Part 1 - example - read-input"
-    (is (= {:cups {3 8
-                   8 9
-                   9 1
-                   1 2
-                   2 5
-                   5 4
-                   4 6
-                   6 7
-                   7 3}
-            :cup 3
-            :min 1
-            :max 9}
-           (#'advent-of-code-2020.day23/read-input example-input)))))
+    (let [state (#'advent-of-code-2020.day23/read-input example-input)]
+      (are [x y] (= x y)
+        [0 2 5 8 6 4 7 3 9 1] (vec (:cups state))
+        3 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
-(def ^:private move-steps
+(defn- move-steps [input]
   (iterate #'advent-of-code-2020.day23/move
-   (#'advent-of-code-2020.day23/read-input example-input)))
+           (#'advent-of-code-2020.day23/read-input input)))
 
 (deftest day23-1-example-move-1-test
   (testing "Day 23 - Part 1 - example - move 1"
-    (is (= {:cups {3 2
-                   2 8
-                   8 9
-                   9 1
-                   1 5
-                   5 4
-                   4 6
-                   6 7
-                   7 3}
-            :cup 2
-            :min 1
-            :max 9}
-           (nth move-steps 1)))))
+    (let [state (nth (move-steps example-input) 1)]
+      (are [x y] (= x y)
+        [0 5 8 2 6 4 7 3 9 1] (vec (:cups state))
+        2 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-2-test
   (testing "Day 23 - Part 1 - example - move 2"
-    (is (= {:cups {3 2
-                   2 5
-                   5 4
-                   4 6
-                   6 7
-                   7 8
-                   8 9
-                   9 1
-                   1 3}
-            :cup 5
-            :min 1
-            :max 9}
-           (nth move-steps 2)))))
+    (let [state (nth (move-steps example-input) 2)]
+      (are [x y] (= x y)
+        [0 3 5 2 6 4 7 8 9 1] (vec (:cups state))
+        5 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-3-test
   (testing "Day 23 - Part 1 - example - move 3"
-    (is (= {:cups {3 4
-                   4 6
-                   6 7
-                   7 2
-                   2 5
-                   5 8
-                   8 9
-                   9 1
-                   1 3}
-            :cup 8
-            :min 1
-            :max 9}
-           (nth move-steps 3)))))
+    (let [state (nth (move-steps example-input) 3)]
+      (are [x y] (= x y)
+        [0 3 5 4 6 8 7 2 9 1] (vec (:cups state))
+        8 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-4-test
   (testing "Day 23 - Part 1 - example - move 4"
-    (is (= {:cups {3 2
-                   2 5
-                   5 8
-                   8 4
-                   4 6
-                   6 7
-                   7 9
-                   9 1
-                   1 3}
-            :cup 4
-            :min 1
-            :max 9}
-           (nth move-steps 4)))))
+    (let [state (nth (move-steps example-input) 4)]
+      (are [x y] (= x y)
+        [0 3 5 2 6 8 7 9 4 1] (vec (:cups state))
+        4 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-5-test
   (testing "Day 23 - Part 1 - example - move 5"
-    (is (= {:cups {9 2
-                   2 5
-                   5 8
-                   8 4
-                   4 1
-                   1 3
-                   3 6
-                   6 7
-                   7 9}
-            :cup 1
-            :min 1
-            :max 9}
-           (nth move-steps 5)))))
+    (let [state (nth (move-steps example-input) 5)]
+      (are [x y] (= x y)
+        [0 3 5 6 1 8 7 9 4 2] (vec (:cups state))
+        1 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-6-test
   (testing "Day 23 - Part 1 - example - move 6"
-    (is (= {:cups {7 2
-                   2 5
-                   5 8
-                   8 4
-                   4 1
-                   1 9
-                   9 3
-                   3 6
-                   6 7}
-            :cup 9
-            :min 1
-            :max 9}
-           (nth move-steps 6)))))
+    (let [state (nth (move-steps example-input) 6)]
+      (are [x y] (= x y)
+        [0 9 5 6 1 8 7 2 4 3] (vec (:cups state))
+        9 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-move-10-test
   (testing "Day 23 - Part 1 - example - move 10"
-    (is (= {:cups {5 8
-                   8 3
-                   3 7
-                   7 4
-                   4 1
-                   1 9
-                   9 2
-                   2 6
-                   6 5}
-            :cup 8
-            :min 1
-            :max 9}
-           (nth move-steps 10)))))
+    (let [state (nth (move-steps example-input) 10)]
+      (are [x y] (= x y)
+        [0 9 6 7 1 8 5 4 3 2] (vec (:cups state))
+        8 (:cup state)
+        1 (:min state)
+        9 (:max state)))))
 
 (deftest day23-1-example-10-test
   (testing "Day 23 - Part 1 - example - 10"
@@ -155,38 +99,20 @@
 
 (deftest day23-2-extend-up-to-test
   (testing "Day 23 - Part 2 - extend-up-to"
-    (is (= {:cups {3 8
-                   8 9
-                   9 1
-                   1 2
-                   2 5
-                   5 4
-                   4 6
-                   6 7
-                   7 10
-                   10 11
-                   11 12
-                   12 13
-                   13 14
-                   14 15
-                   15 16
-                   16 17
-                   17 18
-                   18 19
-                   19 20
-                   20 3}
-            :cup 3
-            :min 1
-            :max 20}
-           (#'advent-of-code-2020.day23/extend-up-to
-            (#'advent-of-code-2020.day23/read-input example-input) 20)))))
+    (let [state (#'advent-of-code-2020.day23/extend-up-to
+                 (#'advent-of-code-2020.day23/read-input example-input) 20)]
+      (are [x y] (= x y)
+        [0 2 5 8 6 4 7 10 9 1 11 12 13 14 15 16 17 18 19 20 3] (vec (:cups state))
+        3 (:cup state)
+        1 (:min state)
+        20 (:max state)))))
 
 (deftest day23-2-example-test
-  (testing "Day 23 - Part 2 - example - 100"
+  (testing "Day 23 - Part 2 - example"
     (is (= 149245887792
            (day23-2
             (#'advent-of-code-2020.day23/read-input example-input))))))
 
 (deftest day23-2-test
   (testing "Day 23 - Part 2"
-    (is (= 264692662390 (time (day23-2))))))
+    (is (= 264692662390 (day23-2)))))

@@ -7,8 +7,13 @@
   (let [nums (u/read-longs s #"")]
     ;; Map of previous -> next element
     {:cups
-     (reduce (fn [m [a b]] (assoc m a b))
-             {} (conj (partition 2 1 nums) [(peek nums) (first nums)]))
+     ;; The cups are an array which indices point to the successors,
+     ;; i.e. cups[1]=5 means that 5 is the successor to 1
+     (reduce (fn [^longs arr [^long a ^long b]]
+               (aset arr a b) arr)
+             (long-array (inc (count nums)))
+             (conj (partition 2 1 nums) ; Point to the successors
+                   [(peek nums) (first nums)])) ; Close the ring
      :cup (first nums)
      :min (reduce min nums)
      :max (reduce max nums)}))
@@ -23,34 +28,32 @@
       (first (remove #{a b c} [max (dec max) (- max 2) (- max 3)])))))
 
 (defn- move
-  ([{:keys [cups cup] :as state}]
-   (let [a (get cups cup)
-         b (get cups a)
-         c (get cups b)
-         aft (get cups c)
+  ([{:keys [^longs cups cup] :as state}]
+   (let [a (aget cups cup)
+         b (aget cups a)
+         c (aget cups b)
+         aft (aget cups c)
          dest (destination state a b c)
-         d (get cups dest)]
-     (-> state
-         (assoc ,,, :cups (-> cups
-                              transient
-                              (assoc! ,,, dest a)
-                              (assoc! ,,, c d)
-                              (assoc! ,,, cup aft)
-                              persistent!))
-         (assoc ,,, :cup aft))))
+         d (aget cups dest)]
+     ;; Reshuffle the cups
+     (aset cups dest a)
+     (aset cups c d)
+     (aset cups cup aft)
+     ;; Move on to the next cup
+     (assoc state :cup aft)))
   ([^long steps state]
    (if (zero? steps)
      state
      (recur (dec steps) (move state)))))
 
-(defn- state->long [{:keys [cups]}]
+(defn- state->long [{:keys [^longs cups]}]
   (Long/parseLong
    (string/join
     (eduction
      (comp (map second)
            (take-while (complement #{1})))
-     (iterate (fn [[s i]] [s (get s i)])
-              [cups (get cups 1)])))))
+     (iterate (fn [[^longs cs i]] [cs (aget cs i)])
+              [cups (aget cups 1)])))))
 
 (defn day23-1
   ([] (day23-1 (read-input "467528193")))
@@ -64,21 +67,22 @@
    (eduction
     (comp (map second)
           (take-while (complement #{cup})))
-    (rest (iterate (fn [[cups cup]] [cups (get cups cup)])
+    (rest (iterate (fn [[^longs cups ^long cup]] [cups (aget cups cup)])
                    [cups cup])))))
 
-(defn- extend-up-to [{:keys [^long max cups ^long cup] :as state} ^long up-to]
-  (let [lc (last-cup state)]
-    (as-> state s
-      (assoc s :cups
-             (as-> cups c
-               (transient c)
-               (reduce (fn [s ^long i] (assoc! s i (inc i)))
-                       c (range (inc max) up-to))
-               (assoc! c up-to cup)
-               (assoc! c lc (inc max))
-               (persistent! c)))
-      (assoc s :max up-to))))
+(defn- extend-up-to [{:keys [^long max ^longs cups ^long cup] :as state} ^long up-to]
+  (let [lc (last-cup state)
+        cups (long-array (inc up-to) cups)]
+    ;; Fill the array up with the values up to up-to
+    (reduce (fn [^longs cs ^long i] (aset cs i (inc i)) cs)
+            cups (range (inc max) up-to))
+    ;; Close the ring structure
+    (aset cups up-to cup)
+    ;; Fix the last cup pointing to the old value
+    (aset cups lc (inc max))
+    (-> state
+        (assoc ,,, :cups cups)
+        (assoc ,,, :max up-to))))
 
 (defn day23-2
   ([] (day23-2 (read-input "467528193")))
@@ -86,6 +90,6 @@
    (day23-2 (extend-up-to state 1000000) 10000000))
   ([state steps]
    (let [c (:cups (move steps state))
-         a ^long (get c 1)
-         b ^long (get c a)]
+         a ^long (aget ^longs c 1)
+         b ^long (aget ^longs c a)]
      (* a b))))
