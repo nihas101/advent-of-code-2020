@@ -1,5 +1,5 @@
 # Advent of code 2020 ![Clojure CI](https://github.com/nihas101/advent-of-code-2020/workflows/Clojure%20CI/badge.svg)
-A reopsitory containing my solutions to the [Advent of code 2020](https://adventofcode.com)
+A repository containing my solutions to the [Advent of code 2020](https://adventofcode.com)
 
 ## Requirements
 The solutions are written in [Clojure](https://clojure.org). [Spec](https://clojure.org/guides/spec) is used in some solutions, so **Clojure 1.10** or higher is required to run some solutions.
