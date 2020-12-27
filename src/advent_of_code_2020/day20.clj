@@ -34,7 +34,7 @@
    (read-string (string/join (conj (reverse border) "2r")))]) ; Flipped value
 
 (defn- remove-border! [{:keys [^long width ^long height] :as image}]
-  (reduce (fn [i [x y]] (dissoc! i [x y]))
+  (reduce dissoc!
           image
           (concat (mapv vector (range width) (repeat 0)) ; North
                   (mapv vector (repeat (dec width)) (range height)) ; East
@@ -204,8 +204,8 @@
 
 (defn- image-tile->row-strings [{:keys [image]}]
   (let [content (:content image)
-        width (-> content :width)
-        height (-> content :height)]
+        width (:width content)
+        height (:height content)]
     (mapv string/join
           (for [y (range height)]
             (for [x (range width)]

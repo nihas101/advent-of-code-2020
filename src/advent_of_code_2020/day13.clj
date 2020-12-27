@@ -7,11 +7,11 @@
   (-> bus-schedule
       string/split-lines
       vec
-      (update ,,, 0 #(Integer/parseInt %))
+      (update ,,, 0 #(Long/parseLong %))
       (update ,,, 1 (fn [s] (transduce
                              (map (fn [i]
                                     (when (not= i "x")
-                                      (Integer/parseInt i))))
+                                      (Long/parseLong i))))
                              conj
                              (string/split s #","))))))
 

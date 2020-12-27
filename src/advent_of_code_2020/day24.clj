@@ -42,13 +42,13 @@
 (defn- black-neighboring-tiles [black-tiles tile]
   (count (filter black-tiles (neighbors tile))))
 
-(defn- handle-black-tile [new-tiles black-tiles tile]
+(defn- handle-black-tile! [new-tiles black-tiles tile]
   (let [black-neighbor-tiles (black-neighboring-tiles black-tiles tile)]
     (if (or (zero? ^long black-neighbor-tiles) (< 2 ^long black-neighbor-tiles))
       new-tiles
       (conj! new-tiles tile)))) ; The tiles stays on the black side
 
-(defn- handle-white-tile [new-tiles black-tiles tile]
+(defn- handle-white-tile! [new-tiles black-tiles tile]
   (if (= 2 ^long (black-neighboring-tiles black-tiles tile))
     (conj! new-tiles tile) ; The tile is flipped to the black side
     new-tiles))
@@ -59,8 +59,8 @@
     (persistent!
      (reduce (fn [new-tiles tile]
                (if (contains? black-tiles tile)
-                 (handle-black-tile new-tiles black-tiles tile)
-                 (handle-white-tile new-tiles black-tiles tile)))
+                 (handle-black-tile! new-tiles black-tiles tile)
+                 (handle-white-tile! new-tiles black-tiles tile)))
              (transient #{})
              interesting-tiles))))
 

@@ -4,7 +4,7 @@
    [clojure.set :as sets]))
 
 (defn- parse-rule [[amount bag]]
-  [bag (Integer/parseInt amount)])
+  [bag (Long/parseLong amount)])
 
 (defn- parse-bag-rule [[bag contain-rules]]
   [bag (transduce

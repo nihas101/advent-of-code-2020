@@ -2,19 +2,20 @@
   (:require
    [clojure.string :as string]))
 
-(defn- insert-seats [layout seats y]
-  (reduce (fn [lo [s x]] (assoc lo [x y] s))
+(defn- insert-seats! [layout seats y]
+  (reduce (fn [lo [s x]] (assoc! lo [x y] s))
           layout (mapv vector seats (range))))
 
 (defn- read-layout [layout]
-  (reduce (fn [lo [row x]] (insert-seats lo row x))
-          {}
-          (mapv vector (string/split-lines layout) (range))))
+  (persistent!
+   (reduce (fn [lo [row x]] (insert-seats! lo row x))
+           (transient {})
+           (mapv vector (string/split-lines layout) (range)))))
 
 (defn chair-layout->string [layout]
   (let [row-size (inc ^long (apply max (mapv first (keys layout))))]
     (transduce
-     (comp (map second) ; Get the chair and neighbours
+     (comp (map second) ; Get the chair and neighbors
            (map first)  ; Only take the chair
            (partition-all row-size) ; Split back into rows
            (fn stringify [rf]
@@ -34,16 +35,16 @@
                       (map first))
                 (second (get layout [x y])))))
 
-(defn- neighbour-pos [^long x ^long y]
+(defn- neighbor-pos [^long x ^long y]
   (mapv (fn [[^long dx ^long dy]] [(+ x dx) (+ y dy)]) [[-1 -1] [0 -1] [1 -1]
                                                         [-1  0]        [1  0]
                                                         [-1  1] [0  1] [1  1]]))
 
-;; We first calculate all neighbours once and then only lookup those neighbours
-(defn- neighbours [layout [^long x ^long y]]
+;; We first calculate all neighbors once and then only lookup those neighbors
+(defn- neighbors [layout [^long x ^long y]]
   (if (= \L (get layout [x y]))
-    (update layout [x y] (fn [c] [c (neighbour-pos x y)]))
-    (update layout [x y] (fn [c] [c nil])))) ; No reason to calc neighbours for the floor
+    (update layout [x y] (fn [c] [c (neighbor-pos x y)]))
+    (update layout [x y] (fn [c] [c nil])))) ; No reason to calc neighbors for the floor
 
 (defn- handle-empty-chair [new-layout layout x y]
   (if (nil? (get (chair-freqs layout x y) \#))
@@ -80,10 +81,11 @@
 
 (defn day11-1
   ([] (day11-1 chair-layout))
-  ([chair-layout] (day11 (reduce neighbours chair-layout
-                                 (keys chair-layout)) 3)))
+  ([chair-layout]
+   (day11 (reduce neighbors chair-layout
+                  (keys chair-layout)) 3)))
 
-;; We first calculate all chairs in view once and then only lookup those neighbours
+;; We first calculate all chairs in view once and then only lookup those neighbors
 (defn- chair-in-view [[layout ^long x ^long y] [^long dx ^long dy]]
   (let [new-x (+ x dx)
         new-y (+ y dy)
@@ -106,5 +108,6 @@
 
 (defn day11-2
   ([] (day11-2 chair-layout))
-  ([chair-layout] (day11 (reduce (partial in-view chair-layout)
-                                 chair-layout (keys chair-layout)) 4)))
+  ([chair-layout]
+   (day11 (reduce (partial in-view chair-layout)
+                  chair-layout (keys chair-layout)) 4)))

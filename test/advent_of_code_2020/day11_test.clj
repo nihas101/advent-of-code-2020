@@ -17,7 +17,7 @@ L.LLLLL.LL")
 
 (def game-of-chairs-1
   (let [lo (#'advent-of-code-2020.day11/read-layout example-layout)
-        lo (reduce #'advent-of-code-2020.day11/neighbours lo (keys lo))
+        lo (reduce #'advent-of-code-2020.day11/neighbors lo (keys lo))
         pos (transduce (comp (filter (fn [[_ [c]]] (not= c \.)))
                              (map first))
                        conj

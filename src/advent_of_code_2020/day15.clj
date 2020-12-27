@@ -4,7 +4,7 @@
 
 (defn- next-number
   "Produces the next number in the game from the provided `numbers` and
-   `n` and updates `numbers` in preperation for the next round."
+   `n` and updates `numbers` in preparation for the next round."
   [numbers ^long current-time ^long n]
   (if-let [last-time ^long (get numbers n)]
     [(assoc numbers n current-time) (- current-time last-time)]

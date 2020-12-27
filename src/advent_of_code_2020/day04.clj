@@ -39,14 +39,14 @@
                 (mapv (fn [[n m]] (str "0{" n "}[0-9]{" m "}"))
                       [[0 9] [1 8] [2 7] [3 6] [4 5] [5 4] [6 3] [7 2] [8 1]]))))
 
-(s/def ::byr (s/and string? #(<= 1920 (Integer/parseInt %) 2002)))
-(s/def ::iyr (s/and string? #(<= 2010 (Integer/parseInt %) 2020)))
-(s/def ::eyr (s/and string? #(<= 2020 (Integer/parseInt %) 2030)))
+(s/def ::byr (s/and string? #(<= 1920 (Long/parseLong %) 2002)))
+(s/def ::iyr (s/and string? #(<= 2010 (Long/parseLong %) 2020)))
+(s/def ::eyr (s/and string? #(<= 2020 (Long/parseLong %) 2030)))
 (s/def ::hgt (s/and string?
                     (s/or :in (s/and #(string/ends-with? % "in")
-                                     #(<= 59 (Integer/parseInt (subs % 0 (- (count %) 2))) 76))
+                                     #(<= 59 (Long/parseLong (subs % 0 (- (count %) 2))) 76))
                           :cm (s/and #(string/ends-with? % "cm")
-                                     #(<= 150 (Integer/parseInt (subs % 0 (- (count %) 2))) 193)))))
+                                     #(<= 150 (Long/parseLong (subs % 0 (- (count %) 2))) 193)))))
 (s/def ::hcl (s/and string?
                     #(= (re-matches #"#[0-9a-f]{6}" %) %)))
 (s/def ::ecl #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"})

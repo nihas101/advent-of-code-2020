@@ -4,8 +4,13 @@
    [clojure.string :as string]
    [clojure.set :as sets]))
 
-(defn- distinct-answeres [group]
-  (count (distinct (apply concat group))))
+(defn- distinct-answers [group]
+  (count
+   (transduce
+    (comp (mapcat identity)
+          (distinct))
+    conj
+    group)))
 
 (defonce ^:private customs-answers
   (mapv #(string/split % #"\s+")
@@ -17,9 +22,18 @@
   ([the-count grouped-customs-answers]
    (transduce (map the-count) + grouped-customs-answers)))
 
-(def day6-1 (partial day6 distinct-answeres))
+(def day6-1 (partial day6 distinct-answers))
 
 (defn- common-answered [group]
-  (count (apply sets/intersection (mapv set group))))
+  (count
+   (transduce
+    (map set)
+    (fn ([] nil)
+      ([result] result)
+      ([result input]
+       (if result
+         (sets/intersection result input)
+         input)))
+    group)))
 
 (def day6-2 (partial day6 common-answered))

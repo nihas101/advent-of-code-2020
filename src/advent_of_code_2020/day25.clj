@@ -15,9 +15,14 @@
        (recur (transform-step subject-number lsx))))))
 
 (defn- loop-size [public-key subject-number]
-  (ffirst
-   (drop-while (fn [[_ x]] (not= x public-key))
-               (transform-subject-number subject-number))))
+  (transduce
+   (comp (drop-while (fn [[_ x]] (not= x public-key)))
+         (take 1))
+   (fn
+     ([] nil)
+     ([result] (first result))
+     ([_ input] input))
+   (transform-subject-number subject-number)))
 
 (defn- encryption-key [public-key loop-size]
   (transform-subject-number public-key loop-size))

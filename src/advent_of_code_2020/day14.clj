@@ -6,7 +6,7 @@
 
 (defn read-assign [instr]
   (let [[_ sink v] (string/split instr #"(mem\[)|(\]\s+=\s+)")]
-    [:assign (Integer/parseInt sink) (Integer/parseInt v)]))
+    [:assign (Long/parseLong sink) (Long/parseLong v)]))
 
 (defmethod read-instruction [1 "mem"] [_ instr] (read-assign instr))
 
@@ -41,10 +41,10 @@
   ([version] (day14 version (read-program version docking-program)))
   ([version instr]
    (reduce +
-           (-> execute-program
-               (reduce ,,, {:version version} instr)
-               :mem
-               vals))))
+           (->> instr
+                (reduce execute-program {:version version})
+                :mem
+                vals))))
 
 (def day14-1 (partial day14 1))
 

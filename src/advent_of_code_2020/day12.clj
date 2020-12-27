@@ -3,7 +3,7 @@
    [clojure.string :as string]))
 
 (defn- parse-instructions [s]
-  (mapv (fn [[d & v]] [d (Integer/parseInt (string/join v))])
+  (mapv (fn [[d & v]] [d (Long/parseLong (string/join v))])
         (string/split-lines s)))
 
 (defonce ^:private direction->delta

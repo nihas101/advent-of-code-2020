@@ -16,18 +16,19 @@
 
 (defn- day1
   "https://adventofcode.com/2020/day/1"
-  ([combinator filter]
-   (day1 combinator filter expenses))
-  ([combinator filter expenses]
-   (->> expenses
-        (combinator)
-        (filter)
-        (first)
-        (apply *))))
+  ([combinator filter-transducer]
+   (day1 combinator filter-transducer expenses))
+  ([combinator filter-transducer expenses]
+   (transduce
+    (comp filter-transducer
+          (take 1)
+          (mapcat identity))
+    *
+    (combinator expenses))))
 
 (def day1-1 (partial day1 (partial combinations [])
-                     (partial filter (fn [[^long a ^long b]]
-                                       (= (+ a b) 2020)))))
+                     (filter (fn [[^long a ^long b]]
+                               (= (+ a b) 2020)))))
 
 (defn- expense-3-combinations
   "Creates all possible combinations of 3 expense entries"
@@ -39,5 +40,5 @@
       res)))
 
 (def day1-2 (partial day1 expense-3-combinations
-                     (partial filter (fn [[^long a ^long b ^long c]]
-                                       (= (+ a b c) 2020)))))
+                     (filter (fn [[^long a ^long b ^long c]]
+                               (= (+ a b c) 2020)))))

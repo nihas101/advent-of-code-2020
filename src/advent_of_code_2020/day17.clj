@@ -24,9 +24,11 @@
       ps)))
 
 (defn- considerable-pos [cubes]
-  (distinct (mapcat expand-to-cube cubes)))
+  (transduce
+   (mapcat expand-to-cube)
+   conj #{} cubes))
 
-(defn- active-neighbours [cubes pos]
+(defn- active-neighbors [cubes pos]
   (filter (partial contains? cubes)
           ;; Remove the original position
           (rest (expand-to-cube pos))))
@@ -35,10 +37,10 @@
   (let [active (contains? old-cubes cube)]
     (cond
       ;; The cube stays active
-      (and active (contains? #{2 3} (count (active-neighbours old-cubes cube))))
+      (and active (contains? #{2 3} (count (active-neighbors old-cubes cube))))
       new-cubes
       ;; An inactive cube becomes active
-      (and (not active) (= 3 (count (active-neighbours old-cubes cube))))
+      (and (not active) (= 3 (count (active-neighbors old-cubes cube))))
       (conj new-cubes cube)
       ;; Otherwise the cube becomes inactive
       :else (disj new-cubes cube))))

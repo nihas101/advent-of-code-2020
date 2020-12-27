@@ -6,7 +6,7 @@
   (transduce
    (comp
     (map #(string/split % #"\s+"))
-    (map (fn [[instruction arg]] [(keyword instruction) (Integer/parseInt arg)])))
+    (map (fn [[instruction arg]] [(keyword instruction) (Long/parseLong arg)])))
    conj
    (string/split-lines s)))
 

@@ -4,11 +4,13 @@
    [clojure.string :as string]))
 
 (defn- read-rules [rules]
-  (let [r (mapcat (fn [rule] (string/split rule #":\s+|-|\s*or\s"))
-                  (string/split-lines rules))]
-    (mapv (fn [[c a b d e]] [c [(Integer/parseInt a) (Integer/parseInt b)]
-                             [(Integer/parseInt d) (Integer/parseInt e)]])
-          (partition-all 5 r))))
+  (transduce
+   (comp (mapcat (fn [rule] (string/split rule #":\s+|-|\s*or\s")))
+         (partition-all 5)
+         (map (fn [[c a b d e]] [c [(Long/parseLong a) (Long/parseLong b)]
+                                 [(Long/parseLong d) (Long/parseLong e)]])))
+   conj
+   (string/split-lines rules)))
 
 (defn- read-ticket [ticket] (u/read-longs ticket #","))
 

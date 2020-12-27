@@ -24,7 +24,7 @@
   (testing "Day 17 - Part 1 - Example 1 - active-neighbours"
     (is (= (sort-pos [[2 1 0] [0 2 0] ,,, [2 2 0]])
            (sort-pos
-            (#'advent-of-code-2020.day17/active-neighbours
+            (#'advent-of-code-2020.day17/active-neighbors
              (#'advent-of-code-2020.day17/read-input 3 example-input)
              [1 2 0]))))))
 
